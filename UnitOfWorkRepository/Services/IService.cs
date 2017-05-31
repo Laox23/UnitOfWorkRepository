@@ -19,5 +19,6 @@ namespace UnitOfWorkRepository.Services
 
         RetourService Supprime(object id);
         RetourService Supprime(TEntity entityToDelete);
+
     }
 }
