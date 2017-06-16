@@ -20,7 +20,7 @@ namespace UnitOfWorkRepository.DAL
         }
 
         public UnitOfWork()
-            : this(new DbContext2())
+            : this(new DbContextGF())
         {
         }
 

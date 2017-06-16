@@ -17,7 +17,7 @@ namespace DalTest
         public void TestEnregistre()
         {
             // enregistrement simple
-            using (var unitOfWork = new UnitOfWork())
+            using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
             {
                 var tiersAEnrrgistrer = ModelsFactory.CreerTiers("PremierTiersNom", "PremierTiersPrenom");
 
@@ -29,7 +29,7 @@ namespace DalTest
             }
 
             // enregistrement complexe
-            using (var unitOfWork = new UnitOfWork())
+            using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
             {
                 var tiersAEnregistrer = ModelsFactory.CreerTiers("PremierTiersNom", "PremierTiersPrenom");
                 var adresseAEnregistrer = ModelsFactory.CreerAdresse("NY", tiersAEnregistrer);
@@ -51,7 +51,7 @@ namespace DalTest
             var nouvelId = 0;
 
             // enregistrement simple aavec rollback
-            using (var unitOfWork = new UnitOfWork())
+            using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
             {
                 using (var transaction = unitOfWork.DbContext.Database.BeginTransaction())
                 {
@@ -71,7 +71,7 @@ namespace DalTest
             }
 
             // check l'id n'est pas en base
-            using (var unitOfWork = new UnitOfWork())
+            using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
             {
                 var tiersEnBase = unitOfWork.Repository<Tiers>().GetById(nouvelId);
 
@@ -79,7 +79,7 @@ namespace DalTest
             }
 
             // enregistrement simple avec commit
-            using (var unitOfWork = new UnitOfWork())
+            using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
             {
                 using (var transaction = unitOfWork.DbContext.Database.BeginTransaction())
                 {
@@ -98,7 +98,7 @@ namespace DalTest
             }
 
             // check l'id est en base
-            using (var unitOfWork = new UnitOfWork())
+            using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
             {
                 var tiersEnBase = unitOfWork.Repository<Tiers>().GetById(nouvelId);
 
