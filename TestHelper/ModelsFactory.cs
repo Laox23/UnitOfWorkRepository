@@ -11,7 +11,6 @@ namespace TestHelper
                 Nom = nom,
                 Prenom = prenom
             };
-
         }
 
         public static Adresse CreerAdresse(string adresse)
