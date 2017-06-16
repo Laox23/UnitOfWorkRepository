@@ -1,119 +1,119 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Modeles;
-using System;
-using System.Collections.Generic;
-using TestHelper;
-using UnitOfWorkRepository.DAL;
+﻿//using Microsoft.VisualStudio.TestTools.UnitTesting;
+//using Modeles;
+//using System;
+//using System.Collections.Generic;
+//using TestHelper;
+//using UnitOfWorkRepository.DAL;
 
-namespace DalTest
-{
-    /// <summary>
-    /// Description résumée pour GenericEntityRepositoryTest
-    /// </summary>
-    [TestClass]
-    public class GenericEntityRepositoryTest
-    {
-        [TestMethod]
-        public void TestEnregistre()
-        {
-            // enregistrement simple
-            using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
-            {
-                var tiersAEnrrgistrer = ModelsFactory.CreerTiers("PremierTiersNom", "PremierTiersPrenom");
+//namespace DalTest
+//{
+//    /// <summary>
+//    /// Description résumée pour GenericEntityRepositoryTest
+//    /// </summary>
+//    [TestClass]
+//    public class GenericEntityRepositoryTest
+//    {
+//        [TestMethod]
+//        public void TestEnregistre()
+//        {
+//            // enregistrement simple
+//            using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
+//            {
+//                var tiersAEnrrgistrer = ModelsFactory.CreerTiers("PremierTiersNom", "PremierTiersPrenom");
 
-                Assert.IsTrue(tiersAEnrrgistrer.Id <= 0);
+//                Assert.IsTrue(tiersAEnrrgistrer.Id <= 0);
 
-                unitOfWork.Repository<Tiers>().Enregistre(tiersAEnrrgistrer);
+//                unitOfWork.Repository<Tiers>().Enregistre(tiersAEnrrgistrer);
 
-                Assert.IsTrue(tiersAEnrrgistrer.Id > 0);
-            }
+//                Assert.IsTrue(tiersAEnrrgistrer.Id > 0);
+//            }
 
-            // enregistrement complexe
-            using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
-            {
-                var tiersAEnregistrer = ModelsFactory.CreerTiers("PremierTiersNom", "PremierTiersPrenom");
-                var adresseAEnregistrer = ModelsFactory.CreerAdresse("NY", tiersAEnregistrer);
+//            // enregistrement complexe
+//            using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
+//            {
+//                var tiersAEnregistrer = ModelsFactory.CreerTiers("PremierTiersNom", "PremierTiersPrenom");
+//                var adresseAEnregistrer = ModelsFactory.CreerAdresse("NY", tiersAEnregistrer);
 
-                Assert.IsTrue(tiersAEnregistrer.Id <= 0);
-                Assert.IsTrue(adresseAEnregistrer.Id <= 0);
+//                Assert.IsTrue(tiersAEnregistrer.Id <= 0);
+//                Assert.IsTrue(adresseAEnregistrer.Id <= 0);
 
-                // le tiers va s'enregistrer en même temps que l'adresse => grace au lien
-                unitOfWork.Repository<Adresse>().Enregistre(adresseAEnregistrer);
+//                // le tiers va s'enregistrer en même temps que l'adresse => grace au lien
+//                unitOfWork.Repository<Adresse>().Enregistre(adresseAEnregistrer);
 
-                Assert.IsTrue(tiersAEnregistrer.Id > 0);
-                Assert.IsTrue(adresseAEnregistrer.Id > 0);
-            }
-        }
+//                Assert.IsTrue(tiersAEnregistrer.Id > 0);
+//                Assert.IsTrue(adresseAEnregistrer.Id > 0);
+//            }
+//        }
 
-        [TestMethod]
-        public void TestEnregistreAvecTransaction()
-        {
-            var nouvelId = 0;
+//        [TestMethod]
+//        public void TestEnregistreAvecTransaction()
+//        {
+//            var nouvelId = 0;
 
-            // enregistrement simple aavec rollback
-            using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
-            {
-                using (var transaction = unitOfWork.DbContext.Database.BeginTransaction())
-                {
-                    var tiersAEnrrgistrer = ModelsFactory.CreerTiers("PremierTiersNom", "PremierTiersPrenom");
+//            // enregistrement simple aavec rollback
+//            using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
+//            {
+//                using (var transaction = unitOfWork.DbContext.Database.BeginTransaction())
+//                {
+//                    var tiersAEnrrgistrer = ModelsFactory.CreerTiers("PremierTiersNom", "PremierTiersPrenom");
 
-                    Assert.IsTrue(tiersAEnrrgistrer.Id <= 0);
+//                    Assert.IsTrue(tiersAEnrrgistrer.Id <= 0);
 
-                    unitOfWork.Repository<Tiers>().Enregistre(tiersAEnrrgistrer);
+//                    unitOfWork.Repository<Tiers>().Enregistre(tiersAEnrrgistrer);
 
-                    Assert.IsTrue(tiersAEnrrgistrer.Id > 0);
+//                    Assert.IsTrue(tiersAEnrrgistrer.Id > 0);
 
-                    nouvelId = tiersAEnrrgistrer.Id;
+//                    nouvelId = tiersAEnrrgistrer.Id;
 
-                    // si pas de commit alors rollback auto
-                    //transaction.Rollback();
-                }
-            }
+//                    // si pas de commit alors rollback auto
+//                    //transaction.Rollback();
+//                }
+//            }
 
-            // check l'id n'est pas en base
-            using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
-            {
-                var tiersEnBase = unitOfWork.Repository<Tiers>().GetById(nouvelId);
+//            // check l'id n'est pas en base
+//            using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
+//            {
+//                var tiersEnBase = unitOfWork.Repository<Tiers>().GetById(nouvelId);
 
-                Assert.IsNull(tiersEnBase);
-            }
+//                Assert.IsNull(tiersEnBase);
+//            }
 
-            // enregistrement simple avec commit
-            using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
-            {
-                using (var transaction = unitOfWork.DbContext.Database.BeginTransaction())
-                {
-                    var tiersAEnrrgistrer = ModelsFactory.CreerTiers("PremierTiersNom", "PremierTiersPrenom");
+//            // enregistrement simple avec commit
+//            using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
+//            {
+//                using (var transaction = unitOfWork.DbContext.Database.BeginTransaction())
+//                {
+//                    var tiersAEnrrgistrer = ModelsFactory.CreerTiers("PremierTiersNom", "PremierTiersPrenom");
 
-                    Assert.IsTrue(tiersAEnrrgistrer.Id <= 0);
+//                    Assert.IsTrue(tiersAEnrrgistrer.Id <= 0);
 
-                    unitOfWork.Repository<Tiers>().Enregistre(tiersAEnrrgistrer);
+//                    unitOfWork.Repository<Tiers>().Enregistre(tiersAEnrrgistrer);
 
-                    Assert.IsTrue(tiersAEnrrgistrer.Id > 0);
+//                    Assert.IsTrue(tiersAEnrrgistrer.Id > 0);
 
-                    nouvelId = tiersAEnrrgistrer.Id;
+//                    nouvelId = tiersAEnrrgistrer.Id;
 
-                   transaction.Commit();
-                }
-            }
+//                   transaction.Commit();
+//                }
+//            }
 
-            // check l'id est en base
-            using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
-            {
-                var tiersEnBase = unitOfWork.Repository<Tiers>().GetById(nouvelId);
+//            // check l'id est en base
+//            using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
+//            {
+//                var tiersEnBase = unitOfWork.Repository<Tiers>().GetById(nouvelId);
 
-                Assert.IsNotNull(tiersEnBase);
-            }
-        }
+//                Assert.IsNotNull(tiersEnBase);
+//            }
+//        }
 
-        [TestMethod]
-        public void TestEnregistreException()
-        {
-            Assert.ThrowsException<Exception>(() =>
-            {
-                throw new Exception();
-            });
-        }
+//        [TestMethod]
+//        public void TestEnregistreException()
+//        {
+//            Assert.ThrowsException<Exception>(() =>
+//            {
+//                throw new Exception();
+//            });
+//        }
 
-    }
-}
+//    }
+//}

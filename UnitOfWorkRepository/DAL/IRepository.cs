@@ -12,7 +12,7 @@ namespace UnitOfWorkRepository.DAL
     public interface IRepository<TEntity> where TEntity : ModeleBase
     {
         TEntity GetById(object id);
-        TEntity GetByClause(Func<TEntity, bool> filtre = null);
+        TEntity GetByClause(Func<TEntity, bool> filtre);
 
         IEnumerable<TEntity> Where(
             Func<TEntity, bool> filtre = null,

@@ -28,7 +28,7 @@ namespace UnitOfWorkRepository.DAL
 
             query = query.Where(filtre).AsQueryable();
 
-            return query.FirstOrDefault();
+            return query.Single();
         }
 
         public virtual IEnumerable<TEntity> Where(
