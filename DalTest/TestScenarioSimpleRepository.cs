@@ -3,22 +3,25 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnitOfWorkRepository.DAL;
 using TestHelper;
 using Modeles;
+using System.Linq;
 
 namespace DalTest
 {
     [TestClass]
-    public class TestSenarioRepository
+    public class TestScenarioSimpleRepository
     {
         [TestMethod]
         public void FullTest()
         {
-            Assert.IsTrue(TestEnregistrement(),"Test enregistrement non ok.");
+            Assert.IsTrue(TestEnregistre(),"Test enregistrement non ok.");
             Assert.IsTrue(TestEnregistreAvecTransaction(), "Test enregistrement avec transaction non ok.");
             Assert.IsTrue(TestGetById(), "Test TestGetById non ok.");
             Assert.IsTrue(TestGetByClause(), "Test TestGetById non ok.");
+            Assert.IsTrue(TestEnregistreModification(), "Test EnregistreModification non ok.");
+            Assert.IsTrue(TestWhere(), "Test Where non ok.");  
         }
 
-        private bool TestEnregistrement()
+        private bool TestEnregistre()
         {
             var retourOk = false;
             try
@@ -179,7 +182,68 @@ namespace DalTest
                     Assert.AreEqual("DeuxiemeTiersNom", deuxiemeTiers.Nom);
                     Assert.AreEqual("DeuxiemeTiersPrenom", deuxiemeTiers.Prenom);
 
-                    var laCaDoitPeter = unitOfWork.Repository<Tiers>().GetByClause(t => t.Nom.Contains("Tiers"));
+                    try
+                    {
+                        var laCaDoitPeter = unitOfWork.Repository<Tiers>().GetByClause(t => t.Nom.Contains("Tiers"));
+                    }
+                    catch (Exception ex)
+                    {
+                        retourOk = true;
+                    }
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return retourOk;
+        }
+
+        private bool TestEnregistreModification()
+        {
+            var retourOk = false;
+
+            try
+            {
+                // Test modification
+                using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
+                {
+                    var deuxiemeTiers = unitOfWork.Repository<Tiers>().GetByClause(t => t.Nom == "DeuxiemeTiersNom");
+
+                    deuxiemeTiers.Prenom = "DeuxiemeTiersPrenomApresModification";
+
+                    unitOfWork.Repository<Tiers>().Enregistre(deuxiemeTiers);
+
+                    var deuxiemeTiersApresModification = unitOfWork.Repository<Tiers>().GetById(2);
+
+                    Assert.AreEqual("DeuxiemeTiersPrenomApresModification", deuxiemeTiersApresModification.Prenom);
+
+                    retourOk = true;
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return retourOk;
+        }
+
+        private bool TestWhere()
+        {
+            bool retourOk = false;
+
+            try
+            {
+                // Tests filtre
+                using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
+                {
+                    Assert.AreEqual(3, unitOfWork.Repository<Tiers>().Where().Count());
+                    Assert.AreEqual(1, unitOfWork.Repository<Tiers>().Where(t => t.Nom.StartsWith("Premier")).Count());
+                    Assert.AreEqual(2, unitOfWork.Repository<Tiers>().Where(t => t.Nom.StartsWith("Deuxieme")).Count()); 
+                    Assert.AreEqual(0, unitOfWork.Repository<Tiers>().Where(t => t.Nom.StartsWith("Troisième")).Count());
                 }
 
                 retourOk = true;
@@ -191,7 +255,5 @@ namespace DalTest
 
             return retourOk;
         }
-
-
     }
 }
