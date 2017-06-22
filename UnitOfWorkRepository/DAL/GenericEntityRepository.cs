@@ -37,15 +37,21 @@ namespace UnitOfWorkRepository.DAL
             string proprieteesIncluse = "")
         {
             IQueryable<TEntity> query = _context.Set<TEntity>();
+            bool avecInclude = false;
 
             if (filtre != null)
             {
                 query = query.Where(filtre).AsQueryable();
             }
 
-            foreach (var includeProperty in proprieteesIncluse.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            if (!string.IsNullOrWhiteSpace(proprieteesIncluse))
             {
-                query = query.Include(includeProperty);
+                foreach (var includeProperty in proprieteesIncluse.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
+
+                avecInclude = true;
             }
 
             if (orderBy != null)
@@ -53,7 +59,10 @@ namespace UnitOfWorkRepository.DAL
                 query = orderBy(query);
             }
 
-            return query;
+            if (avecInclude)
+                return query.ToList();
+            else
+                return query;
         }
 
 

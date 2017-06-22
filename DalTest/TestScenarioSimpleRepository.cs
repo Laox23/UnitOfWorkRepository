@@ -246,11 +246,64 @@ namespace DalTest
                     Assert.AreEqual(0, unitOfWork.Repository<Tiers>().Where(t => t.Nom.StartsWith("Troisième")).Count());
                 }
 
+                // Tests oderby
+                using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
+                {
+                    var listeOrderByNom = unitOfWork.Repository<Tiers>().Where(null, c => c.OrderBy(t => t.Nom));
+
+                    Assert.AreEqual("DeuxiemeTiersNom", listeOrderByNom.First().Nom); 
+                    Assert.AreEqual("PremierTiersNom", listeOrderByNom.Last().Nom); 
+
+                    var listeOrderByNomDesc = unitOfWork.Repository<Tiers>().Where(null, c => c.OrderByDescending(t => t.Nom));
+                    Assert.AreEqual("PremierTiersNom", listeOrderByNomDesc.First().Nom); 
+                    Assert.AreEqual("DeuxiemeTiersNom", listeOrderByNomDesc.Last().Nom);
+                }
+
+                Tiers tiersAvecInclude = null;
+
+
+                #region Tests include
+                using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
+                {
+                    tiersAvecInclude = unitOfWork.Repository<Tiers>().Where(c => c.Nom == "DeuxiemeTiersNom", null, null).FirstOrDefault();
+
+                    Assert.IsNotNull(tiersAvecInclude);
+                }
+
+                // ici adresse n'est pas chargé et le contexte est fermé donc on ne peut plus le charger.
+                try
+                {
+                    var adresse = tiersAvecInclude.Adresse;
+                    throw new ApplicationException("La à aurait du péter");
+                }
+                catch (Exception ex){ }
+
+
+                using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
+                {
+                    tiersAvecInclude = unitOfWork.Repository<Tiers>().Where(c => c.Nom == "DeuxiemeTiersNom", null, "Adresse").FirstOrDefault();
+
+                    Assert.IsNotNull(tiersAvecInclude);
+                }
+
+                // ici adresse est chargé (mais du coup c'est plus long ...)
+                Assert.IsNotNull(tiersAvecInclude.Adresse);
+
+
+                using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
+                {
+                    tiersAvecInclude = unitOfWork.Repository<Tiers>().Where(c => c.Nom == "DeuxiemeTiersNom", null, null).FirstOrDefault();
+
+                    // ici dans le contexte encore ouvert on profite du lazy load pour charger dinamyquement (et à la volé) la propriété
+                    Assert.IsNotNull(tiersAvecInclude.Adresse);
+                }
+                #endregion
+
                 retourOk = true;
             }
             catch (Exception ex)
             {
-
+                var exec = ex.ToString();
             }
 
             return retourOk;
