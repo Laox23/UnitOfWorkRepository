@@ -277,7 +277,8 @@ namespace DalTest
 
                 using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
                 {
-                    tiersAvecInclude = unitOfWork.Repository<Tiers>().Where(c => c.Nom == "DeuxiemeTiersNom", null, c => c.Adresse).FirstOrDefault();
+                    //
+                    tiersAvecInclude = unitOfWork.Repository<Tiers>().Where(c => c.Nom == "DeuxiemeTiersNom", null, c => c.Adresse, c => c.Adresse, c => c.Adresse).FirstOrDefault();
 
                     Assert.IsNotNull(tiersAvecInclude);
                 }
@@ -311,7 +312,7 @@ namespace DalTest
             {
                 using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
                 {
-                    // Supprime par id 
+                    // supp par id 
                     int idPremierTiers = 1;
                     var premierTiers = unitOfWork.Repository<Tiers>().GetById(idPremierTiers);
                     Assert.IsNotNull(premierTiers);

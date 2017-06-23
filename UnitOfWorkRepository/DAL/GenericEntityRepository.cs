@@ -33,17 +33,23 @@ namespace UnitOfWorkRepository.DAL
             return query.Single();
         }
 
+
         public virtual IEnumerable<TEntity> Where(
-           Func<TEntity, bool> filtre = null,
-           Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-           Expression<Func<TEntity, object>> propIncluse = null)
+          Func<TEntity, bool> filtre = null,
+          Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+          params Expression<Func<TEntity, object>>[] proprieteesIncluses)
         {
             IQueryable<TEntity> query = _context.Set<TEntity>();
 
-            bool avecInclude = (propIncluse != null);
+            bool avecInclude = (proprieteesIncluses != null && proprieteesIncluses.Count() > 0);
 
             if (avecInclude)
-                query = query.Include(propIncluse);
+            {
+                foreach (var proprieteeIncluse in proprieteesIncluses)
+                {
+                    query = query.Include(proprieteeIncluse);
+                }
+            }
 
             if (filtre != null)
                 query = query.Where(filtre).AsQueryable();
@@ -55,34 +61,6 @@ namespace UnitOfWorkRepository.DAL
                 return query.ToList();
             else
                 return query;
-        }
-
-        public virtual IEnumerable<TEntity> Where(
-            Func<TEntity, bool> filtre = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            string proprieteesIncluse = "")
-        {
-            IQueryable<TEntity> query = _context.Set<TEntity>();
-
-            if (filtre != null)
-            {
-                query = query.Where(filtre).AsQueryable();
-            }
-
-            if (!string.IsNullOrWhiteSpace(proprieteesIncluse))
-            {
-                foreach (var includeProperty in proprieteesIncluse.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    query = query.Include(includeProperty);
-                }
-            }
-
-            if (orderBy != null)
-            {
-                query = orderBy(query);
-            }
-
-            return query;
         }
 
 

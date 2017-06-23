@@ -15,14 +15,10 @@ namespace UnitOfWorkRepository.DAL
         TEntity GetById(object id);
         TEntity GetByClause(Func<TEntity, bool> filtre);
 
-        //IEnumerable<TEntity> Where(
-        //    Func<TEntity, bool> filtre = null,
-        //    Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null);
-
         IEnumerable<TEntity> Where(
            Func<TEntity, bool> filtre = null,
            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-           Expression<Func<TEntity, object>> propIncluse = null);
+           params Expression<Func<TEntity, object>>[] proprieteesIncluses);
 
         void Enregistre(TEntity entiteeAEnregistrer);
 
