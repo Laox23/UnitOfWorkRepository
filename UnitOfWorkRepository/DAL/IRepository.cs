@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace UnitOfWorkRepository.DAL
 {
@@ -14,10 +15,14 @@ namespace UnitOfWorkRepository.DAL
         TEntity GetById(object id);
         TEntity GetByClause(Func<TEntity, bool> filtre);
 
+        //IEnumerable<TEntity> Where(
+        //    Func<TEntity, bool> filtre = null,
+        //    Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null);
+
         IEnumerable<TEntity> Where(
-            Func<TEntity, bool> filtre = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            string proprieteesIncluse = "");
+           Func<TEntity, bool> filtre = null,
+           Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+           Expression<Func<TEntity, object>> propIncluse = null);
 
         void Enregistre(TEntity entiteeAEnregistrer);
 

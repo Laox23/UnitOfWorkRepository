@@ -13,12 +13,13 @@ namespace DalTest
         [TestMethod]
         public void FullTest()
         {
-            Assert.IsTrue(TestEnregistre(),"Test enregistrement non ok.");
+            Assert.IsTrue(TestEnregistre(), "Test enregistrement non ok.");
             Assert.IsTrue(TestEnregistreAvecTransaction(), "Test enregistrement avec transaction non ok.");
             Assert.IsTrue(TestGetById(), "Test TestGetById non ok.");
             Assert.IsTrue(TestGetByClause(), "Test TestGetById non ok.");
             Assert.IsTrue(TestEnregistreModification(), "Test EnregistreModification non ok.");
-            Assert.IsTrue(TestWhere(), "Test Where non ok.");  
+            Assert.IsTrue(TestWhere(), "Test Where non ok.");
+            Assert.IsTrue(TestSupprime(), "Test Supprime non ok.");
         }
 
         private bool TestEnregistre()
@@ -58,7 +59,6 @@ namespace DalTest
             }
             catch (Exception ex)
             {
-                //
             }
 
             return retourOk;
@@ -131,7 +131,6 @@ namespace DalTest
             }
             catch (Exception ex)
             {
-
             }
 
             return retourOk;
@@ -161,7 +160,6 @@ namespace DalTest
             }
             catch (Exception ex)
             {
-
             }
 
             return retourOk;
@@ -190,12 +188,10 @@ namespace DalTest
                     {
                         retourOk = true;
                     }
-                    
                 }
             }
             catch (Exception ex)
             {
-
             }
 
             return retourOk;
@@ -225,7 +221,6 @@ namespace DalTest
             }
             catch (Exception ex)
             {
-
             }
 
             return retourOk;
@@ -237,32 +232,33 @@ namespace DalTest
 
             try
             {
-                // Tests filtre
+                #region Tests filtres
                 using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
                 {
                     Assert.AreEqual(3, unitOfWork.Repository<Tiers>().Where().Count());
                     Assert.AreEqual(1, unitOfWork.Repository<Tiers>().Where(t => t.Nom.StartsWith("Premier")).Count());
-                    Assert.AreEqual(2, unitOfWork.Repository<Tiers>().Where(t => t.Nom.StartsWith("Deuxieme")).Count()); 
+                    Assert.AreEqual(2, unitOfWork.Repository<Tiers>().Where(t => t.Nom.StartsWith("Deuxieme")).Count());
                     Assert.AreEqual(0, unitOfWork.Repository<Tiers>().Where(t => t.Nom.StartsWith("Troisième")).Count());
                 }
+                #endregion
 
-                // Tests oderby
+                #region Tests OrderBy
                 using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
                 {
                     var listeOrderByNom = unitOfWork.Repository<Tiers>().Where(null, c => c.OrderBy(t => t.Nom));
 
-                    Assert.AreEqual("DeuxiemeTiersNom", listeOrderByNom.First().Nom); 
-                    Assert.AreEqual("PremierTiersNom", listeOrderByNom.Last().Nom); 
+                    Assert.AreEqual("DeuxiemeTiersNom", listeOrderByNom.First().Nom);
+                    Assert.AreEqual("PremierTiersNom", listeOrderByNom.Last().Nom);
 
                     var listeOrderByNomDesc = unitOfWork.Repository<Tiers>().Where(null, c => c.OrderByDescending(t => t.Nom));
-                    Assert.AreEqual("PremierTiersNom", listeOrderByNomDesc.First().Nom); 
+                    Assert.AreEqual("PremierTiersNom", listeOrderByNomDesc.First().Nom);
                     Assert.AreEqual("DeuxiemeTiersNom", listeOrderByNomDesc.Last().Nom);
                 }
-
-                Tiers tiersAvecInclude = null;
-
+                #endregion
 
                 #region Tests include
+                Tiers tiersAvecInclude = null;
+
                 using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
                 {
                     tiersAvecInclude = unitOfWork.Repository<Tiers>().Where(c => c.Nom == "DeuxiemeTiersNom", null, null).FirstOrDefault();
@@ -276,12 +272,12 @@ namespace DalTest
                     var adresse = tiersAvecInclude.Adresse;
                     throw new ApplicationException("La à aurait du péter");
                 }
-                catch (Exception ex){ }
+                catch (Exception ex) { }
 
 
                 using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
                 {
-                    tiersAvecInclude = unitOfWork.Repository<Tiers>().Where(c => c.Nom == "DeuxiemeTiersNom", null, "Adresse").FirstOrDefault();
+                    tiersAvecInclude = unitOfWork.Repository<Tiers>().Where(c => c.Nom == "DeuxiemeTiersNom", null, c => c.Adresse).FirstOrDefault();
 
                     Assert.IsNotNull(tiersAvecInclude);
                 }
@@ -303,7 +299,44 @@ namespace DalTest
             }
             catch (Exception ex)
             {
-                var exec = ex.ToString();
+            }
+
+            return retourOk;
+        }
+
+        private bool TestSupprime()
+        {
+            bool retourOk = false;
+            try
+            {
+                using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
+                {
+                    // Supprime par id 
+                    int idPremierTiers = 1;
+                    var premierTiers = unitOfWork.Repository<Tiers>().GetById(idPremierTiers);
+                    Assert.IsNotNull(premierTiers);
+
+                    unitOfWork.Repository<Tiers>().Supprime(idPremierTiers);
+
+                    premierTiers = unitOfWork.Repository<Tiers>().GetById(idPremierTiers);
+                    Assert.IsNull(premierTiers);
+
+
+                    // Supprime par référence
+                    int idDeuxiemeTiers = 2;
+                    var deuxiemeTiers = unitOfWork.Repository<Tiers>().GetById(idDeuxiemeTiers);
+                    Assert.IsNotNull(deuxiemeTiers);
+
+                    unitOfWork.Repository<Tiers>().Supprime(deuxiemeTiers);
+
+                    deuxiemeTiers = unitOfWork.Repository<Tiers>().GetById(idDeuxiemeTiers);
+                    Assert.IsNull(deuxiemeTiers);
+                }
+
+                retourOk = true;
+            }
+            catch (Exception ex)
+            {
             }
 
             return retourOk;

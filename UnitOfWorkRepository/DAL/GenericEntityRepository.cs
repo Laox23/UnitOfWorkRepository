@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace UnitOfWorkRepository.DAL
 {
@@ -10,6 +11,7 @@ namespace UnitOfWorkRepository.DAL
     {
         private DbContext _context;
         private string _errorMessage = string.Empty;
+
 
         public GenericEntityRepository(UnitOfWork unitOfWork)
         {
@@ -32,12 +34,35 @@ namespace UnitOfWorkRepository.DAL
         }
 
         public virtual IEnumerable<TEntity> Where(
+           Func<TEntity, bool> filtre = null,
+           Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+           Expression<Func<TEntity, object>> propIncluse = null)
+        {
+            IQueryable<TEntity> query = _context.Set<TEntity>();
+
+            bool avecInclude = (propIncluse != null);
+
+            if (avecInclude)
+                query = query.Include(propIncluse);
+
+            if (filtre != null)
+                query = query.Where(filtre).AsQueryable();
+
+            if (orderBy != null)
+                query = orderBy(query);
+
+            if (avecInclude)
+                return query.ToList();
+            else
+                return query;
+        }
+
+        public virtual IEnumerable<TEntity> Where(
             Func<TEntity, bool> filtre = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             string proprieteesIncluse = "")
         {
             IQueryable<TEntity> query = _context.Set<TEntity>();
-            bool avecInclude = false;
 
             if (filtre != null)
             {
@@ -50,8 +75,6 @@ namespace UnitOfWorkRepository.DAL
                 {
                     query = query.Include(includeProperty);
                 }
-
-                avecInclude = true;
             }
 
             if (orderBy != null)
@@ -59,10 +82,7 @@ namespace UnitOfWorkRepository.DAL
                 query = orderBy(query);
             }
 
-            if (avecInclude)
-                return query.ToList();
-            else
-                return query;
+            return query;
         }
 
 

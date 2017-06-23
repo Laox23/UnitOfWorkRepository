@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using UnitOfWorkRepository.DAL;
 
 namespace UnitOfWorkRepository.Services
@@ -40,12 +41,12 @@ namespace UnitOfWorkRepository.Services
         }
 
         public RetourService<IEnumerable<TEntity>> Where(Func<TEntity, bool> filtre =null, 
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, 
-            string proprieteesIncluse = "")
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            Expression<Func<TEntity, object>> propIncluse = null)
         {
             try
             {
-                return new RetourService<IEnumerable<TEntity>>(_unitOfWork.Repository<TEntity>().Where(filtre, orderBy, proprieteesIncluse));
+                return new RetourService<IEnumerable<TEntity>>(_unitOfWork.Repository<TEntity>().Where(filtre, orderBy, propIncluse));
             }
             catch (Exception ex)
             {
