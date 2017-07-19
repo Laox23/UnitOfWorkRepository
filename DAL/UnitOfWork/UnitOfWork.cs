@@ -1,11 +1,12 @@
 ﻿using DAL.Core;
+using DAL.Repository;
 using Modeles;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 
-namespace UnitOfWorkRepository.DAL
+namespace DAL.UnitOfWork
 {
     public class UnitOfWork : IDisposable, IUnitOfWork
     {

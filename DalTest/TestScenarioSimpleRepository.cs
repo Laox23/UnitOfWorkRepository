@@ -1,9 +1,10 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UnitOfWorkRepository.DAL;
 using TestHelper;
 using Modeles;
 using System.Linq;
+using DAL.Core;
+using DAL.UnitOfWork;
 
 namespace DalTest
 {

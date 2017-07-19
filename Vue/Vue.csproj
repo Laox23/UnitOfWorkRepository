@@ -101,13 +101,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DAL\DAL.csproj">
+      <Project>{0c099fd0-e5cf-48a5-8806-8ff80ebea4f1}</Project>
+      <Name>DAL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Modeles\Modeles.csproj">
       <Project>{ea045c37-a69b-4f31-b573-295dac3343b5}</Project>
       <Name>Modeles</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UnitOfWorkRepository\UnitOfWorkRepository.csproj">
-      <Project>{e4cc2905-f7ee-4a6a-ba12-2aaaefacad31}</Project>
-      <Name>UnitOfWorkRepository</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

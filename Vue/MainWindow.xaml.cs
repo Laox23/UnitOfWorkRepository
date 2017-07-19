@@ -1,11 +1,11 @@
-﻿using Modeles;
+﻿using DAL.UnitOfWork;
+using Modeles;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using UnitOfWorkRepository.DAL;
 
 namespace Vue
 {
