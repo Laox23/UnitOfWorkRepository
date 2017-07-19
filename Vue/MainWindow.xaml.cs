@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using UnitOfWorkRepository.DAL;
-using UnitOfWorkRepository.Services;
 
 namespace Vue
 {
@@ -37,29 +36,29 @@ namespace Vue
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            // avec service
-            using (var unitOfWork = new UnitOfWork())
-            {
-                using (var transaction = unitOfWork.DbContext.Database.BeginTransaction())
-                {
-                    IService<Tiers> serviceTiers = new GenericEntityService<Tiers>(unitOfWork);
+            //// avec service
+            //using (var unitOfWork = new UnitOfWork())
+            //{
+            //    using (var transaction = unitOfWork.DbContext.Database.BeginTransaction())
+            //    {
+            //        IService<Tiers> serviceTiers = new GenericEntityService<Tiers>(unitOfWork);
 
-                    var retourWhere = serviceTiers.Where();
-                    if (retourWhere.EstValide)
-                    {
-                        var liste = retourWhere.ObjetRetour;
-                    }
+            //        var retourWhere = serviceTiers.Where();
+            //        if (retourWhere.EstValide)
+            //        {
+            //            var liste = retourWhere.ObjetRetour;
+            //        }
 
-                    var retourEnregistre = serviceTiers.Enregistre(null);
+            //        var retourEnregistre = serviceTiers.Enregistre(null);
 
-                    var retourEnregistre2 = serviceTiers.Enregistre(new Tiers() { Nom = "nom", Prenom = "Prenom" });
+            //        var retourEnregistre2 = serviceTiers.Enregistre(new Tiers() { Nom = "nom", Prenom = "Prenom" });
 
-                    if (!retourWhere.EstValide)
-                        transaction.Rollback();
-                    else
-                        transaction.Commit();
-                }
-            }
+            //        if (!retourWhere.EstValide)
+            //            transaction.Rollback();
+            //        else
+            //            transaction.Commit();
+            //    }
+            //}
 
             // sans service
             //using (var unitOfWork = new UnitOfWork())

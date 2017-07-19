@@ -62,9 +62,6 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Services\GenericEntityService.cs" />
-    <Compile Include="Services\IService.cs" />
-    <Compile Include="Services\RetourService.cs" />
     <Compile Include="DAL\DbContext2.cs" />
     <Compile Include="DAL\GenericEntityRepository.cs" />
     <Compile Include="DAL\IRepository.cs" />
