@@ -1,10 +1,10 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TestHelper;
-using Modeles;
-using System.Linq;
-using DAL.Core;
+﻿using DAL.Core;
 using DAL.UnitOfWork;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Modeles;
+using System;
+using System.Linq;
+using TestHelper;
 
 namespace DalTest
 {
@@ -58,7 +58,7 @@ namespace DalTest
 
                 retourOk = true;
             }
-            catch (Exception ex)
+            catch 
             {
             }
 
@@ -130,7 +130,7 @@ namespace DalTest
 
                 retourOk = true;
             }
-            catch (Exception ex)
+            catch 
             {
             }
 
@@ -159,7 +159,7 @@ namespace DalTest
 
                 retourOk = true;
             }
-            catch (Exception ex)
+            catch 
             {
             }
 
@@ -185,13 +185,13 @@ namespace DalTest
                     {
                         var laCaDoitPeter = unitOfWork.Repository<Tiers>().GetByClause(t => t.Nom.Contains("Tiers"));
                     }
-                    catch (Exception ex)
+                    catch 
                     {
                         retourOk = true;
                     }
                 }
             }
-            catch (Exception ex)
+            catch 
             {
             }
 
@@ -220,7 +220,7 @@ namespace DalTest
                     retourOk = true;
                 }
             }
-            catch (Exception ex)
+            catch 
             {
             }
 
@@ -273,7 +273,7 @@ namespace DalTest
                     var adresse = tiersAvecInclude.Adresse;
                     throw new ApplicationException("La à aurait du péter");
                 }
-                catch (Exception ex) { }
+                catch { }
 
 
                 using (var unitOfWork = new UnitOfWork(new DbContextGF_PourTest()))
@@ -299,7 +299,7 @@ namespace DalTest
 
                 retourOk = true;
             }
-            catch (Exception ex)
+            catch 
             {
             }
 
@@ -337,7 +337,7 @@ namespace DalTest
 
                 retourOk = true;
             }
-            catch (Exception ex)
+            catch
             {
             }
 

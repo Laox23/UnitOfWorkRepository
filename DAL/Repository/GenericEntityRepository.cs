@@ -12,12 +12,10 @@ namespace DAL.Repository
         private DbContext _context;
         private string _errorMessage = string.Empty;
 
-
         public GenericEntityRepository(UnitOfWork.UnitOfWork unitOfWork)
         {
             _context = unitOfWork.DbContext;
         }
-
 
         public TEntity GetById(object id)
         {
